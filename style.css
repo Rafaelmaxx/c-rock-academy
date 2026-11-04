@@ -1,0 +1,105 @@
+/* C-ROCK — Charlottesville Rock Climbing | Custom Styles */
+:root {
+  --forest-950: #0f2319;
+  --forest-900: #163024;
+  --forest-800: #1e4231;
+  --forest-700: #2a5741;
+  --mountain-600: #4c5d54;
+  --mountain-500: #687a70;
+  --mountain-300: #b8c2bc;
+  --cream-50: #fbf9f4;
+  --cream-100: #f5f1e6;
+  --cream-200: #e8e2d2;
+  --cream-300: #d6ceba;
+  --popyellow-400: #ffd026;
+  --popyellow-500: #f5b800;
+  --earth-clay: #b85d3b;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--cream-100);
+  color: var(--forest-900);
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Topo Pattern Overlay */
+.topo-bg {
+  background-color: var(--forest-900);
+  background-image: radial-gradient(circle at 20% 20%, rgba(42, 87, 65, 0.45) 0%, transparent 55%),
+                    radial-gradient(circle at 80% 75%, rgba(255, 208, 38, 0.12) 0%, transparent 50%),
+                    repeating-radial-gradient(circle at 15% 85%, transparent 0, transparent 28px, rgba(255, 255, 255, 0.025) 29px, transparent 30px);
+}
+
+.mountain-divider {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Instagram Carousel Transitions */
+.ig-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.ig-slide {
+  min-width: 100%;
+  user-select: none;
+}
+
+/* Custom Radio & Checkbox Cards */
+.survey-option-card {
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.survey-option-card:hover {
+  border-color: var(--forest-700);
+  background-color: var(--cream-50);
+  transform: translateY(-1px);
+}
+
+.survey-option-card.selected {
+  border-color: var(--forest-800);
+  background-color: #e6efe9;
+  box-shadow: 0 0 0 2px var(--forest-800);
+}
+
+.survey-option-card.disabled-limit {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Progress bar smooth transition */
+.progress-fill {
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle Heart Pop Animation */
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.35); }
+  70% { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+.animate-heart {
+  animation: heartPop 0.4s ease forwards;
+}
+
+/* Toast Notification */
+.toast-enter {
+  transform: translateY(0);
+  opacity: 1;
+}
+.toast-hidden {
+  transform: translateY(1.5rem);
+  opacity: 0;
+  pointer-events: none;
+}
