@@ -1,26 +1,26 @@
-/* C-ROCK — Charlottesville Rock Climbing | Custom Styles */
 :root {
-  --forest-950: #0f2319;
-  --forest-900: #163024;
-  --forest-800: #1e4231;
-  --forest-700: #2a5741;
-  --mountain-600: #4c5d54;
-  --mountain-500: #687a70;
-  --mountain-300: #b8c2bc;
-  --cream-50: #fbf9f4;
-  --cream-100: #f5f1e6;
-  --cream-200: #e8e2d2;
-  --cream-300: #d6ceba;
-  --popyellow-400: #ffd026;
-  --popyellow-500: #f5b800;
-  --earth-clay: #b85d3b;
+  --forest-950: #153148;
+  --forest-900: #15452F;
+  --forest-800: #15452F;
+  --forest-700: #5E807E;
+  --mountain-600: #5E807E;
+  --mountain-500: #5E807E;
+  --mountain-300: #5E807E;
+  --cream-50: #FFEEDF;
+  --cream-100: #FFEEDF;
+  --cream-200: #FFEEDF;
+  --cream-300: #5E807E;
+  --lime-accent: #D6E164;
+  --lime-accent-hover: #D6E164;
+  --popyellow-400: #D6E164;
+  --popyellow-500: #D6E164;
 }
 
 html {
   scroll-behavior: smooth;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: var(--cream-100);
-  color: var(--forest-900);
+  background-color: #FFEEDF;
+  color: #15452F;
 }
 
 h1, h2, h3, h4, .font-display {
@@ -28,11 +28,32 @@ h1, h2, h3, h4, .font-display {
   letter-spacing: -0.02em;
 }
 
+/* Hero Section Responsive Background & Overlay */
+.hero-section-container {
+  position: relative;
+  min-height: 560px;
+  background-color: #153148;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .hero-section-container {
+    min-height: 620px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section-container {
+    min-height: 680px;
+    height: min(88vh, 760px);
+  }
+}
+
 /* Custom Topo Pattern Overlay */
 .topo-bg {
-  background-color: var(--forest-900);
-  background-image: radial-gradient(circle at 20% 20%, rgba(42, 87, 65, 0.45) 0%, transparent 55%),
-                    radial-gradient(circle at 80% 75%, rgba(255, 208, 38, 0.12) 0%, transparent 50%),
+  background-color: #15452F;
+  background-image: radial-gradient(circle at 20% 20%, rgba(94, 128, 126, 0.45) 0%, transparent 55%),
+                    radial-gradient(circle at 80% 75%, rgba(214, 225, 100, 0.12) 0%, transparent 50%),
                     repeating-radial-gradient(circle at 15% 85%, transparent 0, transparent 28px, rgba(255, 255, 255, 0.025) 29px, transparent 30px);
 }
 
@@ -60,15 +81,15 @@ h1, h2, h3, h4, .font-display {
 }
 
 .survey-option-card:hover {
-  border-color: var(--forest-700);
-  background-color: var(--cream-50);
+  border-color: #5E807E;
+  background-color: #FFEEDF;
   transform: translateY(-1px);
 }
 
 .survey-option-card.selected {
-  border-color: var(--forest-800);
-  background-color: #e6efe9;
-  box-shadow: 0 0 0 2px var(--forest-800);
+  border-color: #15452F;
+  background-color: #FFEEDF;
+  box-shadow: 0 0 0 2px #15452F;
 }
 
 .survey-option-card.disabled-limit {

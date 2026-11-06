@@ -1,5 +1,3 @@
-
-// C-ROCK — Charlottesville Rock Climbing | Frontend Application Logic
 (function () {
   'use strict';
 
@@ -69,10 +67,10 @@
       toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-red-300 bg-red-950 text-white transition-all duration-300 toast-enter max-w-md';
       toastIcon.textContent = '⚠️';
     } else if (type === 'gold') {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#ffd026] bg-[#163024] text-[#fbf9f4] transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#d2dd67] bg-[#15452F] text-[#FFEEDF] transition-all duration-300 toast-enter max-w-md';
       toastIcon.textContent = '⛰️';
     } else {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 bg-[#163024] text-white transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 bg-[#15452F] text-white transition-all duration-300 toast-enter max-w-md';
       toastIcon.textContent = '✓';
     }
 
@@ -136,9 +134,9 @@
       const dot = document.getElementById('ig-dot-' + i);
       if (dot) {
         if (i === state.carouselIndex) {
-          dot.className = 'w-6 h-2 rounded-full bg-[#ffd026] transition-all duration-300';
+          dot.className = 'w-6 h-2 rounded-full bg-[#d2dd67] transition-all duration-300';
         } else {
-          dot.className = 'w-2 h-2 rounded-full bg-[#163024]/25 hover:bg-[#163024]/50 transition-all duration-300';
+          dot.className = 'w-2 h-2 rounded-full bg-[#15452F]/25 hover:bg-[#15452F]/50 transition-all duration-300';
         }
       }
     }
@@ -212,11 +210,11 @@
       const len = state.surveyAnswers.q4.length;
       q4Counter.textContent = len + ' / 3 selected';
       if (len === 3) {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#ffd026] text-[#163024]';
+        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#d2dd67] text-[#15452F]';
       } else if (len > 0) {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#1e4231] text-white';
+        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#15452F] text-white';
       } else {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e8e2d2] text-[#163024]';
+        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFEEDF] text-[#15452F]';
       }
     }
   }
@@ -250,10 +248,10 @@
             const emailHint = document.getElementById('q10-email-hint');
             if (emailBox && emailHint) {
               if (val.indexOf('email') !== -1 || val.indexOf('deposit') !== -1) {
-                emailBox.classList.add('ring-2', 'ring-[#ffd026]');
+                emailBox.classList.add('ring-2', 'ring-[#d2dd67]');
                 emailHint.textContent = 'Recommended: Enter your email below so we can send your requested C-Rock updates.';
               } else {
-                emailBox.classList.remove('ring-2', 'ring-[#ffd026]');
+                emailBox.classList.remove('ring-2', 'ring-[#d2dd67]');
                 emailHint.textContent = 'Optional: Leave blank if you only wish to submit anonymous survey feedback.';
               }
             }
@@ -273,13 +271,11 @@
         const idx = state.surveyAnswers.q4.indexOf(val);
 
         if (idx !== -1) {
-          // Deselect
           state.surveyAnswers.q4.splice(idx, 1);
           card.classList.remove('selected');
           const checkIcon = card.querySelector('.checkbox-indicator-icon');
           if (checkIcon) checkIcon.classList.add('hidden');
         } else {
-          // Check limit of 3
           if (state.surveyAnswers.q4.length >= 3) {
             showToast('Please select up to 3 climbing options maximum.', 'error');
             return;
@@ -290,7 +286,6 @@
           if (checkIcon) checkIcon.classList.remove('hidden');
         }
 
-        // Update disabled visual state on unselected items when 3 are picked
         const atLimit = state.surveyAnswers.q4.length >= 3;
         cards.forEach(function (c) {
           const v = c.getAttribute('data-value') || '';
@@ -378,11 +373,11 @@
     if (toggleBtn && toggleKnob) {
       if (state.showFounderNotes) {
         toggleBtn.setAttribute('aria-pressed', 'true');
-        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#ffd026] transition-colors duration-200 focus:outline-none';
-        toggleKnob.className = 'inline-block h-4 w-4 transform rounded-full bg-[#163024] transition-transform duration-200 translate-x-6';
+        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#d2dd67] transition-colors duration-200 focus:outline-none';
+        toggleKnob.className = 'inline-block h-4 w-4 transform rounded-full bg-[#15452F] transition-transform duration-200 translate-x-6';
       } else {
         toggleBtn.setAttribute('aria-pressed', 'false');
-        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#163024]/30 transition-colors duration-200 focus:outline-none';
+        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#15452F]/30 transition-colors duration-200 focus:outline-none';
         toggleKnob.className = 'inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-1';
       }
     }
@@ -417,7 +412,6 @@
     if (!a.q9) markError('q9', 'question-card-9');
     if (!a.q10) markError('q10', 'question-card-10');
 
-    // Validate optional email if provided
     const emailErr = document.getElementById('error-q10-email');
     if (a.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) {
       if (emailErr) {
@@ -441,7 +435,6 @@
       return;
     }
 
-    // Save to localStorage safely
     try {
       localStorage.setItem('crock_survey_response', JSON.stringify(a));
     } catch (err) {
@@ -452,7 +445,6 @@
     const heroSurveyStat = document.getElementById('stat-survey-count');
     if (heroSurveyStat) heroSurveyStat.textContent = state.surveyCount.toString();
 
-    // Populate summary inside Thank You view
     const summaryList = document.getElementById('thank-you-summary-list');
     if (summaryList) {
       const items = [
@@ -468,14 +460,13 @@
         ['Updates & Support Preference', a.q10 + (a.email ? ' (' + a.email + ')' : '')]
       ];
       summaryList.innerHTML = items.map(function (pair) {
-        return '<div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-[#e8e2d2] last:border-b-0 text-sm">' +
+        return '<div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-[#FFEEDF] last:border-b-0 text-sm">' +
           '<span class="font-medium text-[#4c5d54]">' + pair[0] + '</span>' +
-          '<span class="font-semibold text-[#163024] sm:text-right">' + pair[1] + '</span>' +
+          '<span class="font-semibold text-[#15452F] sm:text-right">' + pair[1] + '</span>' +
           '</div>';
       }).join('');
     }
 
-    // Hide form, show Thank You card
     const formWrapper = document.getElementById('survey-form-wrapper');
     const thankYouWrapper = document.getElementById('survey-thank-you-wrapper');
     if (formWrapper && thankYouWrapper) {
@@ -570,7 +561,6 @@
     if (formStep) formStep.classList.add('hidden');
     if (receiptStep) receiptStep.classList.remove('hidden');
 
-    // Update main page deposit CTA badge
     const depositBtnText = document.getElementById('open-stripe-modal-btn-text');
     if (depositBtnText) {
       depositBtnText.textContent = 'View Your $50 Founding Support Receipt (' + receiptId + ')';
@@ -619,7 +609,6 @@
 
   // --- INITIALIZATION ---
   window.addEventListener('DOMContentLoaded', function () {
-    // Mobile Menu Toggle
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenuPanel = document.getElementById('mobile-menu-panel');
     if (mobileMenuBtn && mobileMenuPanel) {
@@ -628,7 +617,6 @@
       });
     }
 
-    // Navigation & CTA Scroll Buttons
     document.querySelectorAll('[data-scroll-to]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         const target = btn.getAttribute('data-scroll-to');
@@ -641,7 +629,6 @@
       });
     });
 
-    // Instagram Carousel Controls
     const prevBtn = document.getElementById('ig-prev-btn');
     const nextBtn = document.getElementById('ig-next-btn');
     const autoPlayBtn = document.getElementById('ig-autoplay-btn');
@@ -701,7 +688,7 @@
         state.carouselSaved = !state.carouselSaved;
         const svg = saveBtn.querySelector('svg');
         if (svg) {
-          svg.setAttribute('fill', state.carouselSaved ? '#163024' : 'none');
+          svg.setAttribute('fill', state.carouselSaved ? '#15452F' : 'none');
         }
         showToast(state.carouselSaved ? 'Saved C-Rock concept post to your collection.' : 'Removed from saved posts.', 'gold');
       });
@@ -719,7 +706,6 @@
     renderCarousel();
     startCarouselTimer();
 
-    // Setup Survey Controls
     setupRadioCards();
     setupQ4Checkboxes();
     setupZipValidation();
@@ -753,7 +739,6 @@
       downloadJsonBtn.addEventListener('click', downloadSurveyJson);
     }
 
-    // Stripe Modal Controls
     const openStripeBtn = document.getElementById('open-stripe-modal-btn');
     const closeStripeBtn = document.getElementById('close-stripe-modal-btn');
     const stripeBackdrop = document.getElementById('stripe-modal-backdrop');
