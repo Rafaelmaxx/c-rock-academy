@@ -10,25 +10,9 @@
     carouselLikes: [142, 98, 116, 184],
     carouselLiked: [false, false, false, false],
     carouselSaved: false,
-    showFounderNotes: false,
     depositCount: 38,
-    surveyCount: 164,
     depositSubmitted: false,
-    lastDepositReceipt: null,
-    surveyAnswers: {
-      q1: '',
-      q2: '',
-      q3: '',
-      q4: [],
-      q5: '',
-      q6: '',
-      q7: '',
-      q8: '',
-      q9: '',
-      q10: '',
-      email: '',
-      consent: false
-    }
+    lastDepositReceipt: null
   };
 
   const slideCaptions = [
@@ -67,7 +51,7 @@
       toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-red-300 bg-red-950 text-white transition-all duration-300 toast-enter max-w-md';
       toastIcon.textContent = '⚠️';
     } else if (type === 'gold') {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#d2dd67] bg-[#15452F] text-[#FFEEDF] transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#D6E164] bg-[#15452F] text-[#FFEEDF] transition-all duration-300 toast-enter max-w-md';
       toastIcon.textContent = '⛰️';
     } else {
       toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 bg-[#15452F] text-white transition-all duration-300 toast-enter max-w-md';
@@ -134,7 +118,7 @@
       const dot = document.getElementById('ig-dot-' + i);
       if (dot) {
         if (i === state.carouselIndex) {
-          dot.className = 'w-6 h-2 rounded-full bg-[#d2dd67] transition-all duration-300';
+          dot.className = 'w-6 h-2 rounded-full bg-[#D6E164] transition-all duration-300';
         } else {
           dot.className = 'w-2 h-2 rounded-full bg-[#15452F]/25 hover:bg-[#15452F]/50 transition-all duration-300';
         }
@@ -174,308 +158,6 @@
       clearInterval(state.carouselTimer);
       state.carouselTimer = null;
     }
-  }
-
-  // --- SURVEY PROGRESS & RENDERING ---
-  function calculateSurveyProgress() {
-    const a = state.surveyAnswers;
-    let completed = 0;
-    if (a.q1) completed++;
-    if (a.q2) completed++;
-    if (a.q3) completed++;
-    if (a.q4 && a.q4.length > 0 && a.q4.length <= 3) completed++;
-    if (a.q5) completed++;
-    if (a.q6) completed++;
-    if (a.q7) completed++;
-    if (/^\d{5}$/.test((a.q8 || '').trim())) completed++;
-    if (a.q9) completed++;
-    if (a.q10) completed++;
-    return completed;
-  }
-
-  function updateSurveyProgressUI() {
-    const completed = calculateSurveyProgress();
-    const pct = Math.round((completed / 10) * 100);
-    const bar = document.getElementById('survey-progress-bar');
-    const text = document.getElementById('survey-progress-text');
-    const pctText = document.getElementById('survey-progress-pct');
-
-    if (bar) bar.style.width = pct + '%';
-    if (text) text.textContent = completed + ' of 10 required questions completed';
-    if (pctText) pctText.textContent = pct + '%';
-
-    // Update Q4 counter badge
-    const q4Counter = document.getElementById('q4-counter-badge');
-    if (q4Counter) {
-      const len = state.surveyAnswers.q4.length;
-      q4Counter.textContent = len + ' / 3 selected';
-      if (len === 3) {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#d2dd67] text-[#15452F]';
-      } else if (len > 0) {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#15452F] text-white';
-      } else {
-        q4Counter.className = 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FFEEDF] text-[#15452F]';
-      }
-    }
-  }
-
-  function setupRadioCards() {
-    const radioGroups = ['q1', 'q2', 'q3', 'q5', 'q6', 'q7', 'q9', 'q10'];
-    radioGroups.forEach(function (qKey) {
-      const cards = document.querySelectorAll('[data-radio-group="' + qKey + '"]');
-      cards.forEach(function (card) {
-        card.addEventListener('click', function () {
-          const val = card.getAttribute('data-value') || '';
-          state.surveyAnswers[qKey] = val;
-
-          // Update visual selection
-          cards.forEach(function (c) {
-            c.classList.remove('selected');
-            const dot = c.querySelector('.radio-indicator-dot');
-            if (dot) dot.classList.add('hidden');
-          });
-          card.classList.add('selected');
-          const activeDot = card.querySelector('.radio-indicator-dot');
-          if (activeDot) activeDot.classList.remove('hidden');
-
-          // Clear error message if visible
-          const errEl = document.getElementById('error-' + qKey);
-          if (errEl) errEl.classList.add('hidden');
-
-          // If Q10 changes, highlight email field when an email option is chosen
-          if (qKey === 'q10') {
-            const emailBox = document.getElementById('q10-email-container');
-            const emailHint = document.getElementById('q10-email-hint');
-            if (emailBox && emailHint) {
-              if (val.indexOf('email') !== -1 || val.indexOf('deposit') !== -1) {
-                emailBox.classList.add('ring-2', 'ring-[#d2dd67]');
-                emailHint.textContent = 'Recommended: Enter your email below so we can send your requested C-Rock updates.';
-              } else {
-                emailBox.classList.remove('ring-2', 'ring-[#d2dd67]');
-                emailHint.textContent = 'Optional: Leave blank if you only wish to submit anonymous survey feedback.';
-              }
-            }
-          }
-
-          updateSurveyProgressUI();
-        });
-      });
-    });
-  }
-
-  function setupQ4Checkboxes() {
-    const cards = document.querySelectorAll('[data-checkbox-group="q4"]');
-    cards.forEach(function (card) {
-      card.addEventListener('click', function () {
-        const val = card.getAttribute('data-value') || '';
-        const idx = state.surveyAnswers.q4.indexOf(val);
-
-        if (idx !== -1) {
-          state.surveyAnswers.q4.splice(idx, 1);
-          card.classList.remove('selected');
-          const checkIcon = card.querySelector('.checkbox-indicator-icon');
-          if (checkIcon) checkIcon.classList.add('hidden');
-        } else {
-          if (state.surveyAnswers.q4.length >= 3) {
-            showToast('Please select up to 3 climbing options maximum.', 'error');
-            return;
-          }
-          state.surveyAnswers.q4.push(val);
-          card.classList.add('selected');
-          const checkIcon = card.querySelector('.checkbox-indicator-icon');
-          if (checkIcon) checkIcon.classList.remove('hidden');
-        }
-
-        const atLimit = state.surveyAnswers.q4.length >= 3;
-        cards.forEach(function (c) {
-          const v = c.getAttribute('data-value') || '';
-          if (atLimit && state.surveyAnswers.q4.indexOf(v) === -1) {
-            c.classList.add('disabled-limit');
-          } else {
-            c.classList.remove('disabled-limit');
-          }
-        });
-
-        const errEl = document.getElementById('error-q4');
-        if (errEl && state.surveyAnswers.q4.length > 0) {
-          errEl.classList.add('hidden');
-        }
-
-        updateSurveyProgressUI();
-      });
-    });
-  }
-
-  function setupZipValidation() {
-    const zipInput = document.getElementById('input-q8-zip');
-    const zipStatus = document.getElementById('q8-zip-status');
-    const errEl = document.getElementById('error-q8');
-    const quickZipBtns = document.querySelectorAll('.quick-zip-btn');
-
-    function validateZipValue(raw) {
-      const cleaned = raw.replace(/[^0-9]/g, '').slice(0, 5);
-      if (zipInput && zipInput.value !== cleaned) {
-        zipInput.value = cleaned;
-      }
-      state.surveyAnswers.q8 = cleaned;
-
-      if (zipStatus) {
-        if (/^\d{5}$/.test(cleaned)) {
-          const isCville = ['22901', '22902', '22903', '22904', '22905', '22911', '22932', '22947', '22963'].indexOf(cleaned) !== -1;
-          zipStatus.textContent = isCville
-            ? '✓ Valid 5-digit US ZIP code (Charlottesville / Albemarle area)'
-            : '✓ Valid 5-digit US ZIP code';
-          zipStatus.className = 'text-xs font-medium text-emerald-700 mt-1.5';
-          if (errEl) errEl.classList.add('hidden');
-        } else if (cleaned.length > 0) {
-          zipStatus.textContent = 'Enter all 5 digits (' + cleaned.length + '/5 digits entered)';
-          zipStatus.className = 'text-xs font-medium text-amber-700 mt-1.5';
-        } else {
-          zipStatus.textContent = 'Must be a valid 5-digit US ZIP code (e.g., 22902)';
-          zipStatus.className = 'text-xs text-[#687a70] mt-1.5';
-        }
-      }
-      updateSurveyProgressUI();
-    }
-
-    if (zipInput) {
-      zipInput.addEventListener('input', function (e) {
-        validateZipValue(e.target.value);
-      });
-    }
-
-    quickZipBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        const z = btn.getAttribute('data-zip') || '';
-        if (zipInput) {
-          zipInput.value = z;
-          validateZipValue(z);
-        }
-      });
-    });
-  }
-
-  // --- FOUNDER NOTES TOGGLE ---
-  function toggleFounderNotes() {
-    state.showFounderNotes = !state.showFounderNotes;
-    const notes = document.querySelectorAll('.founder-rationale-note');
-    const toggleBtn = document.getElementById('toggle-founder-notes-btn');
-    const toggleKnob = document.getElementById('toggle-founder-notes-knob');
-
-    notes.forEach(function (note) {
-      if (state.showFounderNotes) {
-        note.classList.remove('hidden');
-      } else {
-        note.classList.add('hidden');
-      }
-    });
-
-    if (toggleBtn && toggleKnob) {
-      if (state.showFounderNotes) {
-        toggleBtn.setAttribute('aria-pressed', 'true');
-        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#d2dd67] transition-colors duration-200 focus:outline-none';
-        toggleKnob.className = 'inline-block h-4 w-4 transform rounded-full bg-[#15452F] transition-transform duration-200 translate-x-6';
-      } else {
-        toggleBtn.setAttribute('aria-pressed', 'false');
-        toggleBtn.className = 'relative inline-flex h-6 w-11 items-center rounded-full bg-[#15452F]/30 transition-colors duration-200 focus:outline-none';
-        toggleKnob.className = 'inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-1';
-      }
-    }
-  }
-
-  // --- SURVEY FORM SUBMISSION ---
-  function handleSurveySubmit(e) {
-    if (e) e.preventDefault();
-
-    const emailInput = document.getElementById('input-q10-email');
-    const consentInput = document.getElementById('input-q10-consent');
-    if (emailInput) state.surveyAnswers.email = emailInput.value.trim();
-    if (consentInput) state.surveyAnswers.consent = !!consentInput.checked;
-
-    const a = state.surveyAnswers;
-    let firstMissingId = null;
-
-    function markError(qKey, containerId) {
-      const err = document.getElementById('error-' + qKey);
-      if (err) err.classList.remove('hidden');
-      if (!firstMissingId) firstMissingId = containerId;
-    }
-
-    if (!a.q1) markError('q1', 'question-card-1');
-    if (!a.q2) markError('q2', 'question-card-2');
-    if (!a.q3) markError('q3', 'question-card-3');
-    if (!a.q4 || a.q4.length === 0 || a.q4.length > 3) markError('q4', 'question-card-4');
-    if (!a.q5) markError('q5', 'question-card-5');
-    if (!a.q6) markError('q6', 'question-card-6');
-    if (!a.q7) markError('q7', 'question-card-7');
-    if (!/^\d{5}$/.test((a.q8 || '').trim())) markError('q8', 'question-card-8');
-    if (!a.q9) markError('q9', 'question-card-9');
-    if (!a.q10) markError('q10', 'question-card-10');
-
-    const emailErr = document.getElementById('error-q10-email');
-    if (a.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email)) {
-      if (emailErr) {
-        emailErr.textContent = 'Please enter a valid email address (or leave it blank).';
-        emailErr.classList.remove('hidden');
-      }
-      if (!firstMissingId) firstMissingId = 'question-card-10';
-    } else if (a.email && !a.consent) {
-      if (emailErr) {
-        emailErr.textContent = 'Please check the box agreeing to receive email updates about C-Rock.';
-        emailErr.classList.remove('hidden');
-      }
-      if (!firstMissingId) firstMissingId = 'question-card-10';
-    } else if (emailErr) {
-      emailErr.classList.add('hidden');
-    }
-
-    if (firstMissingId) {
-      showToast('Please complete all required survey questions before submitting.', 'error');
-      scrollToSection(firstMissingId);
-      return;
-    }
-
-    try {
-      localStorage.setItem('crock_survey_response', JSON.stringify(a));
-    } catch (err) {
-      // ignore storage errors in sandboxed iframe
-    }
-
-    state.surveyCount += 1;
-    const heroSurveyStat = document.getElementById('stat-survey-count');
-    if (heroSurveyStat) heroSurveyStat.textContent = state.surveyCount.toString();
-
-    const summaryList = document.getElementById('thank-you-summary-list');
-    if (summaryList) {
-      const items = [
-        ['Interest Level', a.q1],
-        ['Climbing Experience', a.q2],
-        ['Estimated Visit Frequency', a.q3],
-        ['Top Climbing Priorities', a.q4.join(', ')],
-        ['Preferred Access Option', a.q5],
-        ['Monthly Membership Price Range', a.q6],
-        ['Single Day Visit Price Range', a.q7],
-        ['Home ZIP Code', a.q8],
-        ['Realistic Travel Time', a.q9],
-        ['Updates & Support Preference', a.q10 + (a.email ? ' (' + a.email + ')' : '')]
-      ];
-      summaryList.innerHTML = items.map(function (pair) {
-        return '<div class="flex flex-col sm:flex-row sm:justify-between py-2 border-b border-[#FFEEDF] last:border-b-0 text-sm">' +
-          '<span class="font-medium text-[#4c5d54]">' + pair[0] + '</span>' +
-          '<span class="font-semibold text-[#15452F] sm:text-right">' + pair[1] + '</span>' +
-          '</div>';
-      }).join('');
-    }
-
-    const formWrapper = document.getElementById('survey-form-wrapper');
-    const thankYouWrapper = document.getElementById('survey-thank-you-wrapper');
-    if (formWrapper && thankYouWrapper) {
-      formWrapper.classList.add('hidden');
-      thankYouWrapper.classList.remove('hidden');
-      scrollToSection('section-survey');
-    }
-
-    showToast('Thanks for being part of the climb! Your response was recorded.', 'gold');
   }
 
   // --- STRIPE DEPOSIT MODAL SIMULATION ---
@@ -546,9 +228,6 @@
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
 
-    const statDeposit = document.getElementById('stat-deposit-count');
-    if (statDeposit) statDeposit.textContent = state.depositCount.toString();
-
     const receiptCodeEl = document.getElementById('receipt-id-code');
     const receiptNameEl = document.getElementById('receipt-holder-name');
     const receiptEmailEl = document.getElementById('receipt-holder-email');
@@ -571,7 +250,7 @@
 
   // --- COPY EMAIL HELPER ---
   function copyContactEmail() {
-    const email = 'hello@crockclimbing.com';
+    const email = 'support@c-rock-climbing.com';
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(email);
@@ -587,24 +266,6 @@
       // fallback
     }
     showToast('Copied contact email: ' + email, 'gold');
-  }
-
-  // --- DOWNLOAD SURVEY RESPONSE JSON ---
-  function downloadSurveyJson() {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
-      project: 'C-ROCK | Charlottesville Rock Climbing',
-      submittedAt: new Date().toISOString(),
-      foundingDepositReserved: state.depositSubmitted,
-      depositReceipt: state.lastDepositReceipt,
-      surveyResponses: state.surveyAnswers
-    }, null, 2));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute('href', dataStr);
-    dlAnchor.setAttribute('download', 'c-rock-community-survey-response.json');
-    document.body.appendChild(dlAnchor);
-    dlAnchor.click();
-    dlAnchor.remove();
-    showToast('Downloaded your survey response JSON copy.', 'gold');
   }
 
   // --- INITIALIZATION ---
@@ -705,39 +366,6 @@
 
     renderCarousel();
     startCarouselTimer();
-
-    setupRadioCards();
-    setupQ4Checkboxes();
-    setupZipValidation();
-    updateSurveyProgressUI();
-
-    const founderToggleBtn = document.getElementById('toggle-founder-notes-btn');
-    if (founderToggleBtn) {
-      founderToggleBtn.addEventListener('click', toggleFounderNotes);
-    }
-
-    const surveyForm = document.getElementById('crock-survey-form');
-    if (surveyForm) {
-      surveyForm.addEventListener('submit', handleSurveySubmit);
-    }
-
-    const editSurveyBtn = document.getElementById('edit-survey-response-btn');
-    if (editSurveyBtn) {
-      editSurveyBtn.addEventListener('click', function () {
-        const formWrapper = document.getElementById('survey-form-wrapper');
-        const thankYouWrapper = document.getElementById('survey-thank-you-wrapper');
-        if (formWrapper && thankYouWrapper) {
-          thankYouWrapper.classList.add('hidden');
-          formWrapper.classList.remove('hidden');
-          scrollToSection('section-survey');
-        }
-      });
-    }
-
-    const downloadJsonBtn = document.getElementById('download-survey-json-btn');
-    if (downloadJsonBtn) {
-      downloadJsonBtn.addEventListener('click', downloadSurveyJson);
-    }
 
     const openStripeBtn = document.getElementById('open-stripe-modal-btn');
     const closeStripeBtn = document.getElementById('close-stripe-modal-btn');
