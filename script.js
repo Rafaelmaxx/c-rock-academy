@@ -18,23 +18,19 @@
   const slideCaptions = [
     {
       tag: 'ROPE CLIMBING & ARCHITECTURE',
-      caption: 'Exploring tall, light-filled top-rope and lead climbing walls inspired by the Blue Ridge Mountains right here in Charlottesville. #CRockCville #CharlottesvilleClimbing #ExploreTheClimb',
-      time: '2 HOURS AGO'
+      caption: 'Exploring tall, light-filled top-rope and lead climbing walls inspired by the Blue Ridge Mountains right here in Charlottesville. #CRockCville #CharlottesvilleClimbing #ExploreTheClimb'
     },
     {
       tag: 'COMMUNITY FIRST',
-      caption: 'More than a gym—a welcoming third space where experienced climbers and first-timers connect, share beta, and build lasting friendships. #CvilleCommunity #ClimbTogether #CRock',
-      time: '5 HOURS AGO'
+      caption: 'More than a gym—a welcoming third space where experienced climbers and first-timers connect, share beta, and build lasting friendships. #CvilleCommunity #ClimbTogether #CRock'
     },
     {
       tag: 'BEGINNER FRIENDLY & INSTRUCTION',
-      caption: 'Never climbed before? Our proposed instruction programs, auto-belays, and introductory clinics are designed to make rope climbing accessible to everyone. #LearnToClimb #CharlottesvilleVA',
-      time: '1 DAY AGO'
+      caption: 'Never climbed before? Our proposed instruction programs, auto-belays, and introductory clinics are designed to make rope climbing accessible to everyone. #LearnToClimb #CharlottesvilleVA'
     },
     {
       tag: 'SOCIAL LOUNGE & IN-HOUSE CAFE',
-      caption: 'Grab an espresso after a session, catch up on remote work, or hang out with friends overlooking the climbing floor. Tell us in our survey if an in-house cafe matters to you! #ClimbAndCoffee',
-      time: '2 DAYS AGO'
+      caption: 'Grab an espresso after a session, catch up on remote work, or hang out with friends overlooking the climbing floor. Tell us in our survey if an in-house cafe matters to you! #ClimbAndCoffee'
     }
   ];
 
@@ -79,7 +75,6 @@
     const counterBadge = document.getElementById('ig-slide-counter');
     const captionEl = document.getElementById('ig-caption-text');
     const tagEl = document.getElementById('ig-caption-tag');
-    const timeEl = document.getElementById('ig-caption-time');
     const likesCountEl = document.getElementById('ig-likes-count');
     const likeBtn = document.getElementById('ig-like-btn');
     const likeSvg = document.getElementById('ig-like-svg');
@@ -96,7 +91,6 @@
     const item = slideCaptions[state.carouselIndex];
     if (captionEl && item) captionEl.textContent = item.caption;
     if (tagEl && item) tagEl.textContent = item.tag;
-    if (timeEl && item) timeEl.textContent = item.time;
 
     const liked = state.carouselLiked[state.carouselIndex];
     const likes = state.carouselLikes[state.carouselIndex];
