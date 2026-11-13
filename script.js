@@ -382,5 +382,18 @@
     copyEmailBtns.forEach(function (btn) {
       btn.addEventListener('click', copyContactEmail);
     });
+
+    // Adjust Google Forms iframe height & scroll position when advancing form sections
+    const surveyIframe = document.getElementById('google-survey-iframe');
+    if (surveyIframe) {
+      let iframeLoadCount = 0;
+      surveyIframe.addEventListener('load', function () {
+        iframeLoadCount += 1;
+        if (iframeLoadCount > 1) {
+          surveyIframe.style.height = '520px';
+          scrollToSection('section-survey');
+        }
+      });
+    }
   });
 })();
