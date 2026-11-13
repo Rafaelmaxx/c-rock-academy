@@ -32,21 +32,20 @@ h1, h2, h3, h4, .font-display {
 /* Hero Section Responsive Background & Overlay */
 .hero-section-container {
   position: relative;
-  min-height: 560px;
+  min-height: clamp(540px, 82vh, 680px);
   background-color: #153148;
   overflow: hidden;
 }
 
 @media (min-width: 640px) {
   .hero-section-container {
-    min-height: 620px;
+    min-height: clamp(600px, 84vh, 740px);
   }
 }
 
 @media (min-width: 1024px) {
   .hero-section-container {
-    min-height: 680px;
-    height: min(88vh, 760px);
+    min-height: clamp(640px, 86vh, 800px);
   }
 }
 
