@@ -66,6 +66,172 @@
     const el = document.getElementById(sectionId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (sectionId === 'section-why') {
+      const fallback = document.getElementById('section-vision');
+      if (fallback) fallback.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // --- GSAP SCROLL & ENTRANCE ANIMATIONS ---
+  let animationsInitialized = false;
+  function initAnimations() {
+    if (animationsInitialized) return;
+    if (typeof gsap === 'undefined') return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    animationsInitialized = true;
+
+    if (typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      ScrollTrigger.config({ ignoreMobileResize: true });
+    }
+
+    // 1. Hero Entrance Timeline (targets wrappers without CSS transition-all, clears props after finish)
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl
+      .fromTo('#section-hero header',
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, clearProps: 'transform,opacity' }
+      )
+      .fromTo('#section-hero h1',
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, clearProps: 'transform,opacity' },
+        '-=0.3'
+      )
+      .fromTo('#section-hero h1 + div',
+        { x: -24, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.65, clearProps: 'transform,opacity' },
+        '-=0.4'
+      )
+      .fromTo('#hero-cta-wrap',
+        { y: 18, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.55, ease: 'back.out(1.6)', clearProps: 'transform,opacity' },
+        '-=0.3'
+      );
+
+    if (typeof ScrollTrigger === 'undefined') return;
+
+    // 2. Hero Parallax Scrub
+    const heroImg = document.getElementById('hero-bg-img');
+    if (heroImg) {
+      gsap.to(heroImg, {
+        yPercent: 14,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#section-hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    }
+
+    // Helper: Check if element is currently visible in viewport
+    function isInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight * 0.95 && rect.bottom > 0;
+    }
+
+    // Helper: Repeating Scroll Reveal that works reliably on F5 mid-page reloads
+    function repeatReveal(selector, hiddenVars, easeStr, staggerVal) {
+      const els = gsap.utils.toArray(selector);
+      if (!els.length) return;
+
+      const visibleVars = {
+        x: 0,
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.72,
+        ease: easeStr || 'power3.out',
+        overwrite: 'auto',
+        clearProps: 'transform'
+      };
+
+      if (staggerVal) {
+        // Initialize hidden only for elements not currently visible on screen
+        els.forEach(function (el) {
+          if (!isInViewport(el)) {
+            gsap.set(el, hiddenVars);
+          } else {
+            gsap.fromTo(el, hiddenVars, visibleVars);
+          }
+        });
+
+        ScrollTrigger.batch(els, {
+          start: 'top 90%',
+          end: 'bottom 5%',
+          onEnter: function (batch) {
+            gsap.fromTo(batch, hiddenVars, Object.assign({}, visibleVars, { stagger: staggerVal }));
+          },
+          onEnterBack: function (batch) {
+            gsap.fromTo(batch, hiddenVars, Object.assign({}, visibleVars, { stagger: staggerVal }));
+          },
+          onLeave: function (batch) {
+            gsap.set(batch, hiddenVars);
+          },
+          onLeaveBack: function (batch) {
+            gsap.set(batch, hiddenVars);
+          }
+        });
+      } else {
+        els.forEach(function (el) {
+          if (!isInViewport(el)) {
+            gsap.set(el, hiddenVars);
+          } else {
+            gsap.fromTo(el, hiddenVars, visibleVars);
+          }
+
+          ScrollTrigger.create({
+            trigger: el,
+            start: 'top 90%',
+            end: 'bottom 5%',
+            onEnter: function () {
+              gsap.fromTo(el, hiddenVars, visibleVars);
+            },
+            onEnterBack: function () {
+              gsap.fromTo(el, hiddenVars, visibleVars);
+            },
+            onLeave: function () {
+              gsap.set(el, hiddenVars);
+            },
+            onLeaveBack: function () {
+              gsap.set(el, hiddenVars);
+            }
+          });
+        });
+      }
+    }
+
+    // 3. Apply dramatic repeating scroll animations across all sections
+    repeatReveal('.gsap-fade-up', { y: 42, opacity: 0 }, 'power3.out', 0);
+    repeatReveal('.gsap-scale-up', { y: 44, scale: 0.94, opacity: 0 }, 'power3.out', 0);
+    repeatReveal('.gsap-slide-left', { x: -46, opacity: 0 }, 'power3.out', 0);
+    repeatReveal('.gsap-slide-right', { x: 46, opacity: 0 }, 'power3.out', 0);
+
+    repeatReveal('.gsap-vision-card', { y: 48, scale: 0.92, opacity: 0 }, 'back.out(1.3)', 0.08);
+    repeatReveal('.gsap-step-card', { y: 46, scale: 0.92, opacity: 0 }, 'back.out(1.3)', 0.12);
+    repeatReveal('.gsap-founder-photo', { y: 44, scale: 0.92, opacity: 0 }, 'back.out(1.3)', 0.12);
+
+    // Refresh ScrollTrigger after Tailwind CDN / images settle
+    setTimeout(function () {
+      ScrollTrigger.refresh();
+    }, 250);
+  }
+
+  // --- BACK TO TOP VISIBILITY ---
+  function handleScrollUI() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const bttBtn = document.getElementById('back-to-top-btn');
+    if (bttBtn) {
+      if (scrollTop > 420) {
+        bttBtn.classList.remove('btt-hidden');
+        bttBtn.classList.add('btt-visible');
+      } else {
+        bttBtn.classList.remove('btt-visible');
+        bttBtn.classList.add('btt-hidden');
+      }
     }
   }
 
@@ -107,7 +273,6 @@
       }
     }
 
-    // Update pagination dots
     for (let i = 0; i < state.carouselTotal; i++) {
       const dot = document.getElementById('ig-dot-' + i);
       if (dot) {
@@ -128,6 +293,36 @@
         autoPlayDot.className = 'w-2 h-2 rounded-full bg-amber-400';
       }
     }
+  }
+
+  function triggerHeartBurst() {
+    const overlay = document.getElementById('ig-heart-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden', 'ig-heart-burst');
+    void overlay.offsetWidth;
+    overlay.classList.add('ig-heart-burst');
+    setTimeout(function () {
+      overlay.classList.add('hidden');
+      overlay.classList.remove('ig-heart-burst');
+    }, 820);
+  }
+
+  function toggleCurrentSlideLike(forceLike) {
+    const idx = state.carouselIndex;
+    const likeBtn = document.getElementById('ig-like-btn');
+    if (forceLike && state.carouselLiked[idx]) {
+      triggerHeartBurst();
+      return;
+    }
+    state.carouselLiked[idx] = forceLike ? true : !state.carouselLiked[idx];
+    state.carouselLikes[idx] += state.carouselLiked[idx] ? 1 : -1;
+    if (likeBtn) {
+      likeBtn.classList.remove('animate-heart');
+      void likeBtn.offsetWidth;
+      likeBtn.classList.add('animate-heart');
+    }
+    if (state.carouselLiked[idx]) triggerHeartBurst();
+    renderCarousel();
   }
 
   function nextSlide() {
@@ -154,6 +349,30 @@
     }
   }
 
+  // --- PHOTO LIGHTBOX MODAL ---
+  function openLightbox(src, loc, caption) {
+    const modal = document.getElementById('photo-lightbox-modal');
+    const imgEl = document.getElementById('lightbox-img');
+    const locEl = document.getElementById('lightbox-loc');
+    const capEl = document.getElementById('lightbox-caption');
+    if (!modal || !imgEl) return;
+    imgEl.src = src;
+    if (locEl) locEl.textContent = loc || '';
+    if (capEl) capEl.textContent = caption || '';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(modal.querySelector('.relative'), { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.4)' });
+    }
+  }
+
+  function closeLightbox() {
+    const modal = document.getElementById('photo-lightbox-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
   // --- STRIPE DEPOSIT MODAL SIMULATION ---
   function openStripeModal() {
     const modal = document.getElementById('stripe-deposit-modal');
@@ -170,6 +389,9 @@
     }
     modal.classList.remove('hidden');
     modal.classList.add('flex');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(modal.querySelector('.relative'), { y: 24, scale: 0.94, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.35, ease: 'back.out(1.4)' });
+    }
   }
 
   function closeStripeModal() {
@@ -263,7 +485,25 @@
   }
 
   // --- INITIALIZATION ---
+  window.addEventListener('load', function () {
+    initAnimations();
+    if (typeof ScrollTrigger !== 'undefined') {
+      ScrollTrigger.refresh();
+    }
+  });
+
   window.addEventListener('DOMContentLoaded', function () {
+    initAnimations();
+    handleScrollUI();
+    window.addEventListener('scroll', handleScrollUI, { passive: true });
+
+    const bttBtn = document.getElementById('back-to-top-btn');
+    if (bttBtn) {
+      bttBtn.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenuPanel = document.getElementById('mobile-menu-panel');
     if (mobileMenuBtn && mobileMenuPanel) {
@@ -273,9 +513,10 @@
     }
 
     document.querySelectorAll('[data-scroll-to]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      btn.addEventListener('click', function (e) {
         const target = btn.getAttribute('data-scroll-to');
         if (target) {
+          if (btn.tagName === 'A') e.preventDefault();
           scrollToSection(target);
           if (mobileMenuPanel && !mobileMenuPanel.classList.contains('hidden')) {
             mobileMenuPanel.classList.add('hidden');
@@ -290,6 +531,7 @@
     const likeBtn = document.getElementById('ig-like-btn');
     const saveBtn = document.getElementById('ig-save-btn');
     const carouselViewport = document.getElementById('ig-carousel-viewport');
+    const carouselTrack = document.getElementById('ig-carousel-track');
 
     if (prevBtn) {
       prevBtn.addEventListener('click', function () {
@@ -328,14 +570,31 @@
 
     if (likeBtn) {
       likeBtn.addEventListener('click', function () {
-        const idx = state.carouselIndex;
-        state.carouselLiked[idx] = !state.carouselLiked[idx];
-        state.carouselLikes[idx] += state.carouselLiked[idx] ? 1 : -1;
-        likeBtn.classList.remove('animate-heart');
-        void likeBtn.offsetWidth;
-        likeBtn.classList.add('animate-heart');
-        renderCarousel();
+        toggleCurrentSlideLike(false);
       });
+    }
+
+    if (carouselTrack) {
+      carouselTrack.addEventListener('dblclick', function () {
+        toggleCurrentSlideLike(true);
+      });
+
+      let touchStartX = 0;
+      carouselTrack.addEventListener('touchstart', function (e) {
+        if (e.touches && e.touches.length) {
+          touchStartX = e.touches[0].clientX;
+        }
+      }, { passive: true });
+      carouselTrack.addEventListener('touchend', function (e) {
+        if (e.changedTouches && e.changedTouches.length) {
+          const diff = touchStartX - e.changedTouches[0].clientX;
+          if (Math.abs(diff) > 40) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+            startCarouselTimer();
+          }
+        }
+      }, { passive: true });
     }
 
     if (saveBtn) {
@@ -361,6 +620,27 @@
     renderCarousel();
     startCarouselTimer();
 
+    document.querySelectorAll('.founder-photo-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        const src = card.getAttribute('data-lightbox-img');
+        const loc = card.getAttribute('data-lightbox-loc');
+        const cap = card.getAttribute('data-lightbox-caption');
+        if (src) openLightbox(src, loc, cap);
+      });
+    });
+
+    const closeLightboxBtn = document.getElementById('close-lightbox-btn');
+    const lightboxBackdrop = document.getElementById('lightbox-backdrop');
+    if (closeLightboxBtn) closeLightboxBtn.addEventListener('click', closeLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+        closeStripeModal();
+      }
+    });
+
     const openStripeBtn = document.getElementById('open-stripe-modal-btn');
     const closeStripeBtn = document.getElementById('close-stripe-modal-btn');
     const stripeBackdrop = document.getElementById('stripe-modal-backdrop');
@@ -383,7 +663,6 @@
       btn.addEventListener('click', copyContactEmail);
     });
 
-    // Adjust Google Forms iframe height & scroll position when advancing form sections
     const surveyIframe = document.getElementById('google-survey-iframe');
     if (surveyIframe) {
       let iframeLoadCount = 0;
