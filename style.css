@@ -22,6 +22,17 @@ html {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: #FFEEDF;
   color: #15452F;
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+main, section, footer {
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, .font-display {

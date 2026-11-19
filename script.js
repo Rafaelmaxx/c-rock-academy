@@ -44,13 +44,13 @@
 
     toastText.textContent = message;
     if (type === 'error') {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-red-300 bg-red-950 text-white transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-4 left-4 sm:left-auto sm:right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-red-300 bg-red-950 text-white transition-all duration-300 toast-enter sm:max-w-md';
       toastIcon.textContent = '⚠️';
     } else if (type === 'gold') {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#D6E164] bg-[#15452F] text-[#FFEEDF] transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-4 left-4 sm:left-auto sm:right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-[#D6E164] bg-[#15452F] text-[#FFEEDF] transition-all duration-300 toast-enter sm:max-w-md';
       toastIcon.textContent = '⛰️';
     } else {
-      toast.className = 'fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 bg-[#15452F] text-white transition-all duration-300 toast-enter max-w-md';
+      toast.className = 'fixed bottom-5 right-4 left-4 sm:left-auto sm:right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl border border-emerald-500/40 bg-[#15452F] text-white transition-all duration-300 toast-enter sm:max-w-md';
       toastIcon.textContent = '✓';
     }
 
@@ -207,8 +207,9 @@
     // 3. Apply dramatic repeating scroll animations across all sections
     repeatReveal('.gsap-fade-up', { y: 42, opacity: 0 }, 'power3.out', 0);
     repeatReveal('.gsap-scale-up', { y: 44, scale: 0.94, opacity: 0 }, 'power3.out', 0);
-    repeatReveal('.gsap-slide-left', { x: -46, opacity: 0 }, 'power3.out', 0);
-    repeatReveal('.gsap-slide-right', { x: 46, opacity: 0 }, 'power3.out', 0);
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    repeatReveal('.gsap-slide-left', isDesktop ? { x: -46, opacity: 0 } : { y: 36, opacity: 0 }, 'power3.out', 0);
+    repeatReveal('.gsap-slide-right', isDesktop ? { x: 46, opacity: 0 } : { y: 36, opacity: 0 }, 'power3.out', 0);
 
     repeatReveal('.gsap-vision-card', { y: 48, scale: 0.92, opacity: 0 }, 'back.out(1.3)', 0.08);
     repeatReveal('.gsap-step-card', { y: 46, scale: 0.92, opacity: 0 }, 'back.out(1.3)', 0.12);
